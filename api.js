@@ -61,7 +61,7 @@ async function handleLogin(){
 }
 
 
-
+// 로그인되어 있으면, 이름이 뜨게하는 함수
 async function getName(){
 
     const response = await fetch(`${backend_base_url}/getuserinfo`,{
@@ -70,13 +70,19 @@ async function getName(){
         }
     }
     )
-    response_json = await response.json()
-    console.log(response_json)
 
-    const username = document.getElementById("username")
-    username.innerText = response_json.email
 
-    return response_json.email
+    
+    if(response.status==200){ // 토큰이 있으면 200 없으면 401, <-- authorize함수에서 토큰이 안오면 401로 표시하게 함
+        response_json = await response.json()
+        console.log(response_json)
+        return response_json.email
+
+    }else{
+        return null
+    }
+
+    
 
 }
 
@@ -125,3 +131,33 @@ async function getArticles(){
     return response_json.articles
     
 }
+
+
+// 백엔드와 송신을 하지 않기때문에 async를 붙이지 않아도된다.
+function logout(){
+    localStorage.removeItem("token") //로컬스토리지 토큰값제거해주기
+    window.location.replace(`${frontend_base_url}/`); // 제거 후 새로고침 기능
+}
+
+
+
+// 게시물을 클릭했을때 detail로 들어가기 위한 함수
+function articleDetail(article_id){
+    console.log(article_id)
+
+    const url = `${frontend_base_url}/article_detail.html?id=${article_id}` //article_id로 가는 주소
+    location.href = url
+}
+
+// 게시물 상세 페이지에 있는 id를 /article/<article_id>에 접속을 해서 가져오는 것 
+async function getArticleDetail(article_id){
+    const response = await fetch(`${backend_base_url}/article/${article_id}`,{
+        method:'GET',
+    })
+    response_json = await response.json()
+    console.log(response_json)
+
+    return response_json.article
+}
+
+

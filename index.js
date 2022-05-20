@@ -30,7 +30,7 @@ async function checkLogin(){
     const loginoutButton = document.getElementById("loginout") // loginout버튼을 가져옴
 
     if(name){ //name이 있다면
-        username.innerText = name // id="username"에 있는 innerText를 name으로 바꿔주고
+        username.innerText = name.email // id="username"에 있는 innerText를 name으로 바꿔주고
         loginoutButton.innerText = "로그아웃" // 로그아웃 버튼안의 텍스트가 "로그아웃"으로 바꿔주고
         loginoutButton.setAttribute("onclick", "logout()") // 클릭했을때 logout()함수가 실행되도록 설정
     }else{

@@ -19,8 +19,17 @@ async function loadArticle(article_id){
     content.innerText = article.content
     user_email.innerText = article.user_email
     time.innerText = article.time
+    console.log(article.comments)
 
+    const comment_section = document.getElementById("comment_section")
+    comment_section.innerHTML=''
+    // 코멘트가 쓸때마다 중복으로 1개 2개 3개 4개 작성되는것을, 중간에 비워줌으로써 방지
 
+    for (let i=0; i<article.comments.length; i ++){
+        const new_comment = document.createElement("p")
+        new_comment.innerText = article.comments[i].content
+        comment_section.appendChild(new_comment)
+    }
 
     const user = await getName()
     if(user.id != article.user){       // article아이디가 user가 같지않다면 
@@ -97,7 +106,15 @@ async function removeArticle(){
     
 }
 
-
+async function writeComment(){
+    const comment_content = document.getElementById("comment_content")
+    // html id = "comment_content" 에서 값을 가져오기
+    const comment = await postComment(article_id, comment_content.value)
+    // 갖고온 텍스트와 article_id를 postComment로 보내준다
+    loadArticle(article_id)
+    comment_content.value = ''
+    // 작성 한 이후 칸에 텍스트를 비우기
+}
 
 
 

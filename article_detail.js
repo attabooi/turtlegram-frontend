@@ -1,6 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search); // URLSearchParams 는 현재 켜져있는 url을 가져옴
 const article_id = urlParams.get('id'); //아까 ?뒤에 id= 값을 가져오는 법
 console.log(article_id)
+let liked = false
 
 
 
@@ -30,6 +31,9 @@ async function loadArticle(article_id){
         new_comment.innerText = article.comments[i].content
         comment_section.appendChild(new_comment)
     }
+    
+    // 좋아요 업데이트
+    updateLike()
 
     const user = await getName()
     if(user.id != article.user){       // article아이디가 user가 같지않다면 
@@ -114,6 +118,42 @@ async function writeComment(){
     loadArticle(article_id)
     comment_content.value = ''
     // 작성 한 이후 칸에 텍스트를 비우기
+}
+
+
+
+//좋아요 기능
+async function likeArticle() {
+    const like_button = document.getElementById("like_button")
+    like_button.classList.toggle("fa-thumbs-down");
+    // fa-thumbs-down이란 클래스가 없으면 만들어주고 있으면 없애줌
+
+    if(!liked){
+        const response = await postLike(article_id)
+        console.log(response, "좋아요")
+        like_button.innerText = parseInt(like_button.innerText) +1
+        // 좋아요 개수 프론트엔드
+        liked = true
+    }else{
+        const response = await deleteLike(article_id)
+        console.log(response, "좋아요 취소")
+        like_button.innerText = parseInt(like_button.innerText) -1
+        // 좋아요 개수 프론트앤드
+        liked = false
+    }
+
+
+}
+
+
+async function updateLike(){
+    const response = await getLike(article_id)
+    console.log(response)
+    liked = response.liked
+    if(liked){
+        like_button.classList.toggle("fa-thumbs-down");
+    }
+
 }
 
 
